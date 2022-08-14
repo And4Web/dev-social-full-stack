@@ -9,6 +9,8 @@ const posts = require('./routes/api/posts');
 
 const app = express();
 
+app.use(express.json());
+
 //database connect
 db.db;
 
