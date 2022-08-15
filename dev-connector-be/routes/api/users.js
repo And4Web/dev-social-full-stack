@@ -1,23 +1,28 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const gravatar = require('gravatar');
+const jwt = require('jsonwebtoken');
+const keys = require('../../dbConfig/keys');
 const router = express.Router();
 
-//User model
+//bring User model
 
 const User = require('../../models/User');
 
-// @route GET api/users/test
-// @desc users endpoint
-// @access Public
+// @route   GET api/users/test
+// @desc    users endpoint
+// @access  Public
 
 router.get('/test', (req, res)=>res.json({msg: "users is working."}));
 
-// @route GET api/users/register
-// @desc users endpoint to register new user
-// @access Public
+// @route   GET api/users/register
+// @desc    users endpoint to register new user
+// @access  Public
 
 router.post('/register', (req, res)=>{
+  
+  //find user in database
+
   User.findOne({email: req.body.email}).then(user=>{
     if(user){
       return res.status(400).json({email: "This email already exists."})
@@ -28,12 +33,16 @@ router.post('/register', (req, res)=>{
         d: 'mm'   //default
       })
 
+    //Create new User
+
       const newUser = new User({
         name: req.body.name,
         email: req.body.email,
         avatar,
         password: req.body.password,
       })
+
+      //Encrypt the password for better security
 
       bcrypt.genSalt(10, (err, salt)=>{
         bcrypt.hash(newUser.password, salt, (err, hash)=>{
@@ -46,5 +55,48 @@ router.post('/register', (req, res)=>{
     }
   })
 });
+
+// @route   GET api/users/login
+// @desc    login the existing user and generating/using tokens 
+// @access  Public
+
+router.post('/login', (req, res)=>{
+  const email = req.body.email;
+  const password = req.body.password;
+
+  //find user in database
+
+  User.findOne({email}).then(user=>{
+    //check for user
+    if(!user){
+      return res.status(400).json({email: "User not found."})
+    }
+    //check password
+    bcrypt.compare(password, user.password).then(isMatch=>{
+      if(isMatch){
+        // on Successful login
+        // res.json({msg: "Login Success."})
+
+        // create token using this payload
+        const payload = {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          avatar: user.avatar,
+        }
+        // Sign Token
+        jwt.sign(payload, keys.secretTokenKey, {expiresIn: 3600}, (err, token)=>{
+          res.json({
+            success: true,
+            token: "Bearer " + token,
+          })
+        })
+      } else{
+        return res.status(400).json({password:"Incorrect Password."})
+      }
+    })
+  })
+})
+
 
 module.exports = router
