@@ -4,6 +4,7 @@ const gravatar = require('gravatar');
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
 const keys = require('../../config/keys');
+
 const router = express.Router();
 
 //bring User model
@@ -104,7 +105,7 @@ router.post('/login', (req, res)=>{
 // @access  Private
 
 router.get('/current', passport.authenticate('jwt', {session: false}), (req, res)=>{
-  res.json({msg: "success"})
+  res.json({msg: "success", user: {name: req.user.name, email: req.user.email, avatar: req.user.avatar? req.user.avatar: "null", createdAt: req.user.date}})
 })
 
 
