@@ -11,8 +11,18 @@ const router = express.Router();
 
 const User = require('../../models/User');
 
+
+// @route   GET api/users
+// @desc    users endpoint - get all users
+// @access  Public
+
+router.get("/", async (req, res)=>{
+  res.json({users: await User.find({}, {password: 0, __v: 0})})
+// read this tut for mongoose methods: https://www.geeksforgeeks.org/mongoose-find-function/
+})
+
 // @route   GET api/users/test
-// @desc    users endpoint
+// @desc    users endpoint - test
 // @access  Public
 
 router.get('/test', (req, res)=>res.json({msg: "users is working."}));
