@@ -5,10 +5,12 @@ const jwt = require('jsonwebtoken');
 const passport = require('passport');
 const keys = require('../../config/keys');
 
+//Load validation data
+const validateRegisterInput = require('../../validation/register');
+
 const router = express.Router();
 
 //bring User model
-
 const User = require('../../models/User');
 
 
@@ -32,9 +34,12 @@ router.get('/test', (req, res)=>res.json({msg: "users is working."}));
 // @access  Public
 
 router.post('/register', (req, res)=>{
-  
+  //check validation
+  const {errors, isValid} = validateRegisterInput(req.body);
+  if(!isValid){
+    return res.status(400).json(errors)
+  }
   //find user in database
-
   User.findOne({email: req.body.email}).then(user=>{
     if(user){
       return res.status(400).json({email: "This email already exists."})
