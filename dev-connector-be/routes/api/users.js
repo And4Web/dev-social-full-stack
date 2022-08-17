@@ -7,12 +7,12 @@ const keys = require('../../config/keys');
 
 //Load validation data
 const validateRegisterInput = require('../../validation/register');
+const validateLoginInput = require('../../validation/login');
 
 const router = express.Router();
 
 //bring User model
 const User = require('../../models/User');
-
 
 // @route   GET api/users
 // @desc    users endpoint - get all users
@@ -42,7 +42,8 @@ router.post('/register', (req, res)=>{
   //find user in database
   User.findOne({email: req.body.email}).then(user=>{
     if(user){
-      return res.status(400).json({email: "This email already exists."})
+      errors.email = "Email already exists."
+      return res.status(400).json(errors)
     } else {
       const avatar = gravatar.url(req.body.email, {
         s: '200', //size
@@ -59,7 +60,7 @@ router.post('/register', (req, res)=>{
         password: req.body.password,
       })
 
-      //Encrypt the password for better security
+    //Encrypt the password for better security
 
       bcrypt.genSalt(10, (err, salt)=>{
         bcrypt.hash(newUser.password, salt, (err, hash)=>{
@@ -78,6 +79,11 @@ router.post('/register', (req, res)=>{
 // @access  Public
 
 router.post('/login', (req, res)=>{
+  //check validation
+  const {errors, isValid} = validateLoginInput(req.body);
+  if(!isValid){
+    return res.status(400).json(errors)
+  }
   const email = req.body.email;
   const password = req.body.password;
 
@@ -86,7 +92,8 @@ router.post('/login', (req, res)=>{
   User.findOne({email}).then(user=>{
     //check for user
     if(!user){
-      return res.status(400).json({email: "User not found."})
+      errors.email = 'We could not find this User in our database.'
+      return res.status(400).json(errors)
     }
     //check password
     bcrypt.compare(password, user.password).then(isMatch=>{
@@ -109,7 +116,8 @@ router.post('/login', (req, res)=>{
           })
         })
       } else{
-        return res.status(400).json({password:"Incorrect Password."})
+        errors.password = 'Your entered Incorrect Password.'
+        return res.status(400).json(errors)
       }
     })
   })
