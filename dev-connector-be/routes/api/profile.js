@@ -32,6 +32,36 @@ router.get('/', passport.authenticate('jwt', {session: false}), (req, res)=>{
   }).catch(err => res.status(404).json(err))
 });
 
+// @route GET api/profile/handle/:handle
+// @desc get profile by handle
+// @access Public
+
+router.get('/handle/:handle', (req, res)=>{
+  const errors = {};
+  Profile.findOne({handle: req.params.handle}).populate('user', ['name', 'avatar']).then(profile=>{
+    if(!profile){
+      errors.noProfile = 'This profile does not exist.'
+      res.status(404).json(errors);
+    }
+    res.json(profile);
+  }).catch(err=>res.status(400).json(err));
+})
+
+// @route GET api/profile/user/:userId
+// @desc get profile by user Id
+// @access Public
+
+router.get('/user/:userId', (req, res)=>{
+  const errors = {};
+  Profile.findOne({user: req.params.userId}).populate('user', ['name', 'avatar']).then(profile=>{
+    if(!profile){
+      errors.noProfile = 'This profile does not exist.'
+      res.status(404).json(errors);
+    }
+    res.json(profile);
+  }).catch(err=>res.status(400).json({profile: 'This user does not exist.'}));
+})
+
 // @route POST api/profile
 // @desc  create/update user profile
 // @access Private
