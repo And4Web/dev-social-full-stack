@@ -32,6 +32,22 @@ router.get('/', passport.authenticate('jwt', {session: false}), (req, res)=>{
   }).catch(err => res.status(404).json(err))
 });
 
+// @route GET api/profile/all
+// @desc get all profiles
+// @access Public
+
+router.get('/all', (req, res)=>{
+  const errors = {};
+  Profile.find({}).populate('user', ['name', 'avatar']).then(async profiles=>{
+    if(!profiles){
+      errors.noProfiles = 'There are no profiles.'
+      res.status(404).json(errors);
+    }
+    res.json({profiles: await Profile.find({})});
+  }).catch(err=>res.status(400).json({profiles: 'There are no profiles.'}));
+})
+
+
 // @route GET api/profile/handle/:handle
 // @desc get profile by handle
 // @access Public
@@ -114,5 +130,27 @@ router.post('/', passport.authenticate('jwt', {session: false}), (req, res)=>{
     }
   })
 });
+
+// @route POST api/profile/experience
+// @desc  create/update user experience
+// @access Private
+
+router.post('/experience', passport.authenticate('jwt', {session: false}), (req, res)=>{
+  Profile.findOne({user: req.user.id}).then(profile=>{
+    const newExp = {
+      title: req.body.title,
+      company: req.body.company,
+      location: req.body.location,
+      from: req.body.from,
+      to: req.body.to,
+      current: req.body.current,
+      description: req.body.description
+    }
+    //Add to exp Array
+    profile.experience.unshift(newExp);
+    profile.save().then(profile=> res.json(profile))
+  })
+})
+
 
 module.exports = router
