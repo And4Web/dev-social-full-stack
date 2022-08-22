@@ -187,5 +187,51 @@ router.post('/education', passport.authenticate('jwt', {session: false}), (req, 
   })
 })
 
+// @route DELETE api/profile/experience/:expID
+// @desc  delete user experience
+// @access Private
+
+router.delete('/experience/:expId', passport.authenticate('jwt', {session: false}), (req, res)=>{
+  //validate experience
+  const {errors, isValid} = validateExperienceInput(req.body);
+  if(!isValid){
+    //return errors
+    res.status(400).json(errors);
+  }
+  Profile.findOne({user: req.user.id}).then(profile=>{
+    //get remove index
+    const removeIndex = profile.experience.map(item=>item.id).indexOf(req.params.expId);
+
+    //splice out of the array
+    profile.experience.splice(removeIndex, 1);
+
+    //save
+    profile.save().then(profile=> res.json(profile))
+  }).catch(err => res.status(404).json(err))
+})
+
+// @route DELETE api/profile/education/:eduID
+// @desc  delete user education
+// @access Private
+
+router.delete('/education/:eduId', passport.authenticate('jwt', {session: false}), (req, res)=>{
+  //validate education
+  const {errors, isValid} = validateEducationInput(req.body);
+  if(!isValid){
+    //return errors
+    res.status(400).json(errors);
+  }
+  Profile.findOne({user: req.user.id}).then(profile=>{
+    //get remove index
+    const removeIndex = profile.education.map(item=>item.id).indexOf(req.params.eduId);
+
+    //splice out of array
+    profile.education.splice(removeIndex, 1);
+
+    //save
+    profile.save().then(profile=> res.json(profile))
+  }).catch(err=>res.status(404).json(err))
+})
+
 
 module.exports = router
