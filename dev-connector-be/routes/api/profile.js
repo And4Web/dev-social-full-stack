@@ -11,6 +11,7 @@ const validateEducationInput = require('../../validation/education');
 const Profile = require('../../models/Profile');
 //Load User Model
 const User = require('../../models/User');
+const profile = require('../../validation/profile');
 
 // @route GET api/profile/test
 // @desc profile test endpoint
@@ -233,5 +234,15 @@ router.delete('/education/:eduId', passport.authenticate('jwt', {session: false}
   }).catch(err=>res.status(404).json(err))
 })
 
+// @route DELETE api/profile
+// @desc  delete user profile
+// @access Private
+
+router.delete('/', passport.authenticate('jwt', {session: false}), (req, res)=>{
+   Profile.findOneAndRemove({user: req.user.id}).then(()=>{
+    User.findOneAndRemove({_id: req.user.id}).then(()=>res.json({deleteSuccess: "Profile deleted"}))
+   })
+
+})
 
 module.exports = router
