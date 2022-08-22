@@ -11,11 +11,13 @@ module.exports = function validateExperienceInput(data){
   if(Validator.isEmpty(data.title)){
     errors.title = 'Title is Required.'
   }
-  if(!Validator.isEmail(data.email)){
-    errors.email = 'Enter valid Email.'
-  }  
-  if(Validator.isEmpty(data.password)){
-    errors.password = "Password is Required."
+  
+  if(Validator.isEmpty(data.company)){
+    errors.company = 'Company is Required.'
+  }
+  
+  if(Validator.isEmpty(data.from)){
+    errors.from = 'From Date is Required.'
   }
   
   return {
