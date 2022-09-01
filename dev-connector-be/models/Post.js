@@ -13,7 +13,7 @@ const PostSchema = new Schema({
   name: {
     type: String
   },
-  avatar:{
+  avatar: { 
     type: String
   },
   likes: [
@@ -33,24 +33,23 @@ const PostSchema = new Schema({
       name: {
         type: String
       },
-      avatar:{
+      avatar: {
         type: String
       },
-      text:{
+      text: {
         type: String,
         required: true
       },
-      date:{
+      date: {
         type: Date,
         default: Date.now
       }
     }
   ],
-  date:{
+  date: {
     type: Date,
     default: Date.now
   }
-
 })
 
 module.exports = Post = mongoose.model('post', PostSchema)
