@@ -15,6 +15,22 @@ const validatePostInput = require('../../validation/post');
 
 router.get('/test', (req, res)=>res.json({msg: "posts is working."}))
 
+// @route GET api/posts
+// @desc  get all posts
+// @access Public
+
+router.get('/', (req, res) => {
+  Post.find().sort({date: -1}).then(posts=>res.json(posts)).catch(err=>res.status(404).json({noPostsFound: 'no posts found.'}))
+})
+
+// @route GET api/posts/:postId
+// @desc  get a single post by id
+// @access Public
+
+router.get('/:postId', (req, res)=>{
+  Post.findById(req.params.postId).then(post=>res.json(post)).catch(err=>res.status(404).json({noPostFound: 'no post having this id found.'}))
+})
+
 // @route POST api/posts
 // @desc  creates a new post
 // @access Private
