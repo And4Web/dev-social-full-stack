@@ -78,7 +78,7 @@ router.delete('/:postId', passport.authenticate("jwt", {session: false}), (req, 
       //delete post
       post.remove().then(() => res.json({success: true}));
     })
-    .catch(err=> res.staus(400).json({postNotFound: 'no post found.'}))
+    .catch(err=> res.status(400).json({postNotFound: 'no post found.'}))
   })
 })
 
@@ -94,14 +94,14 @@ router.post('/like/:postId', passport.authenticate("jwt", {session: false}), (re
 
       //Check if already liked
       if(post.likes.filter(like => like.user.toString() === req.user.id).length > 0){
-        return res.status(404).json({alreadyLiked: 'Your already lked this post.'})
+        return res.status(404).json({alreadyLiked: 'You already liked this post.'})
       }
       //Add user to likes array
       post.likes.unshift({user: req.user.id})
 
       post.save().then(post => res.json(post))
     })
-    .catch(() => res.staus(400).json({postNotFound: 'no post found.'}))
+    .catch(() => res.status(400).json({postNotFound: 'no post found.'}))
   })
 })
 
@@ -127,7 +127,7 @@ router.post('/unlike/:postId', passport.authenticate("jwt", {session: false}), (
 
       post.save().then(post => res.json(post))
     })
-    .catch(() => res.staus(400).json({postNotFound: 'no post found.'}))
+    .catch(() => res.status(400).json({postNotFound: 'no post found.'}))
   })
 })
 
