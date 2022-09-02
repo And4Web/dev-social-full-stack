@@ -173,7 +173,7 @@ router.delete('/comment/:postId/:commentId', passport.authenticate('jwt', {sessi
   .then(post => {
     //check to see if comment exists
 
-    if(post.comments.filter(comment => comment._id.toString() === req.params.commentId).lenght === 0){
+    if(post.comments.filter(comment => comment._id.toString() === req.params.commentId).length === 0){
       return res.status(404).json({commentNotFound: 'commment not found.'})
     }
 
