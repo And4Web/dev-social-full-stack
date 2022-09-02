@@ -11,6 +11,8 @@ const Profile = require('../../models/Post');
 
 // validation
 const validatePostInput = require('../../validation/post');
+const validateCommentInput = require('../../validation/comment');
+const { validate } = require('../../models/Post');
 
 // @route GET api/posts/test
 // @desc posts test endpoint
@@ -129,6 +131,67 @@ router.post('/unlike/:postId', passport.authenticate("jwt", {session: false}), (
     })
     .catch(() => res.status(400).json({postNotFound: 'no post found.'}))
   })
+})
+
+// @route POST api/posts/comment/:postId
+// @desc  Comment on a post
+// @access Private
+
+router.post('/comment/:postId', passport.authenticate('jwt', {session: false}), (req, res) => {
+
+  const {errors, isValid} = validateCommentInput(req.body);
+  if(!isValid){
+    //return response with 400 status and errors object.
+    return res.status(400).json(errors);
+  }
+
+  Post.findById(req.params.postId)
+  .then(post => {
+    const newComment = {
+      text: req.body.text,
+      name: req.body.name,
+      avatar: req.body.avatar,
+      user: req.user.id
+    }
+    
+    //Add comment to Comments array
+    post.comments.unshift(newComment);
+
+    //save
+    post.save().then(post => res.json(post))
+  })
+  .catch(() => res.status(404).json({postNotFound: 'post not found.'}))
+
+})
+// @route DELETE api/posts/comment/:postId/:commentId
+// @desc  remove Comment from a post
+// @access Private
+
+router.delete('/comment/:postId/:commentId', passport.authenticate('jwt', {session: false}), (req, res) => {
+
+  Post.findById(req.params.postId)
+  .then(post => {
+    //check to see if comment exists
+
+    if(post.comments.filter(comment => comment._id.toString() === req.params.commentId).lenght === 0){
+      return res.status(404).json({commentNotFound: 'commment not found.'})
+    }
+
+    //Get removeIndex
+
+    const removeIndex = post.comments.map(comment => comment._id.toString()).indexOf(req.params.commentId);
+    
+    //splice the comment away from the comments array
+
+    post.comments.splice(removeIndex, 1);
+
+    //save
+
+    post.save().then(post => res.json(post))
+
+  })
+  .catch(() => res.status(404).json({postNotFound: 'post not found.'}))
+
 })
 
 module.exports = router;
