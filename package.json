@@ -1,0 +1,28 @@
+{
+  "name": "dev-connector-project",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "install-server": "npm install --prefix dev-connector-be",
+    "install-client": "npm install --prefix dev-connector-fe",
+    "install": "npm run install-server && npm run install-client",
+    "server": "npm run watch --prefix dev-connector-be",
+    "client": "npm start --prefix dev-connector-fe",
+    "watch": "npm run server & npm run client",
+    "type": "git",
+    "url": "git+https://github.com/And4Web/dev-social-full-stack.git"
+  },
+  "author": "Anand Shukla",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/And4Web/dev-social-full-stack/issues"
+  },
+  "homepage": "https://github.com/And4Web/dev-social-full-stack#readme",
+  "dependencies": {
+    "concurrently": "^7.3.0"
+  }
+}
