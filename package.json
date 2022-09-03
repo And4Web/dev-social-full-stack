@@ -10,7 +10,7 @@
     "client":"npm start --prefix dev-connector-fe",
     "dev":"concurrently \"npm run server\" \"npm run client\"",
     "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  },  
   "repository": {
     "type": "git",
     "url": "git+https://github.com/And4Web/dev-social-full-stack.git"

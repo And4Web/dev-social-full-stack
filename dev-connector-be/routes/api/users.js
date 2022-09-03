@@ -29,7 +29,7 @@ router.get("/", async (req, res)=>{
 
 router.get('/test', (req, res)=>res.json({msg: "users is working."}));
 
-// @route   GET api/users/register
+// @route   POST api/users/register
 // @desc    users endpoint to register new user
 // @access  Public
 

@@ -7,6 +7,10 @@ const users = require("./routes/api/users");
 const profile = require('./routes/api/profile');
 const posts = require('./routes/api/posts');
 
+const cors = require('cors');
+
+app.use(cors());
+
 const app = express();
 
 app.use(express.json());
