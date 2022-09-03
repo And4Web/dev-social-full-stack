@@ -1,15 +1,14 @@
 {
   "name": "dev-connector-project",
   "version": "1.0.0",
-  "description": "",
+  "description": "Social network for developers.",
   "main": "index.js",
   "scripts": {
-    "install-server": "npm install --prefix dev-connector-be",
-    "install-client": "npm install --prefix dev-connector-fe",
-    "install": "npm run install-server && npm run install-client",
-    "server": "npm run watch --prefix dev-connector-be",
-    "client": "npm start --prefix dev-connector-fe",
-    "watch": "npm run server & npm run client",
+    "client-install":"npm install --prefix dev-connector-fe",
+    "server-install":"npm install --prefix dev-connector-be",
+    "server":"npm run server --prefix dev-connector-be",
+    "client":"npm start --prefix dev-connector-fe",
+    "dev":"concurrently \"npm run server\" \"npm run client\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
