@@ -4,15 +4,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
     "install-server": "npm install --prefix dev-connector-be",
     "install-client": "npm install --prefix dev-connector-fe",
     "install": "npm run install-server && npm run install-client",
     "server": "npm run watch --prefix dev-connector-be",
     "client": "npm start --prefix dev-connector-fe",
     "watch": "npm run server & npm run client",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
     "type": "git",
     "url": "git+https://github.com/And4Web/dev-social-full-stack.git"
   },
